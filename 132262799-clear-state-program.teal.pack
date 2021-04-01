@@ -1,0 +1,4 @@
+// version 2
+intcblock 1
+intc_0
+return

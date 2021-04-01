@@ -1,0 +1,26 @@
+#pragma version 2
+byte "hello"
+sha256
+byte "world"
+sha256
+concat  64
+dup
+concat  128
+dup
+concat  256
+dup
+concat  512
+dup 
+concat  1024
+dup 
+concat  2048
+dup 
+concat  4096
+store 0
+load 0
+sha256
+int 0
+int 8
+substring3
+
+btoi

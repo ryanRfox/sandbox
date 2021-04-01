@@ -1,0 +1,561 @@
+#pragma version 2
+// intcblock 0 1 5 4 5000 2 3 10000 1000
+// bytecblock 0x41 0x4d41 0x6941 0x734753 0x734d41 0x734141 0x734153 0x734d46 0x734246 0x734346 0x415341 0x5072 0x5375 0x4753 0x73 0x4d46 0x4246 0x4346 0x76 0x6d77 0x7741 0x6277 0x50726f6772616d 0x6d
+int 0
+txn ApplicationID
+==
+bz label1
+global GroupSize
+int 1
+==
+bz label2
+byte "A"
+txn Sender
+app_global_put
+byte "MA"
+txn Sender
+app_global_put
+b label3
+label1:
+byte "A"
+app_global_get
+dup
+store 4
+txn Sender
+==
+bz label4
+txn OnCompletion
+int 5
+==
+bnz label5
+txn OnCompletion
+int 4
+==
+bnz label6
+txn OnCompletion
+int 0
+==
+bnz label7
+err
+label5:
+global GroupSize
+int 1
+==
+bnz label3
+err
+label6:
+global GroupSize
+int 1
+==
+bnz label3
+err
+label7:
+global GroupSize
+int 1
+==
+bz label2
+txna ApplicationArgs 0
+byte "iA"
+==
+bnz label8
+txna ApplicationArgs 0
+byte "sGS"
+==
+bnz label9
+txna ApplicationArgs 0
+byte "sMA"
+==
+bnz label10
+txna ApplicationArgs 0
+byte "sAA"
+==
+bnz label11
+txna ApplicationArgs 0
+byte "sAS"
+==
+bnz label12
+txna ApplicationArgs 0
+byte "sMF"
+==
+bnz label13
+txna ApplicationArgs 0
+byte "sBF"
+==
+bnz label14
+txna ApplicationArgs 0
+byte "sCF"
+==
+bnz label15
+err
+label8:
+byte "ASA"
+txna ApplicationArgs 1
+btoi
+app_global_put
+byte "Pr"
+txna ApplicationArgs 2
+app_global_put
+byte "Su"
+txna ApplicationArgs 3
+app_global_put
+b label3
+label9:
+txna ApplicationArgs 1
+btoi
+dup
+store 8
+int 0
+==
+load 8
+int 1
+==
+||
+bz label2
+byte "GS"
+load 8
+app_global_put
+b label3
+label10:
+byte "MA"
+txna Accounts 1
+app_global_put
+b label3
+label11:
+byte "A"
+txna Accounts 1
+app_global_put
+b label3
+label12:
+txna ApplicationArgs 1
+btoi
+dup
+store 8
+int 0
+==
+load 8
+int 1
+==
+||
+bz label2
+int 1
+byte "s"
+load 8
+app_local_put
+b label3
+label13:
+txna ApplicationArgs 1
+btoi
+dup
+store 8
+load 8
+int 5000
+<=
+bz label2
+byte "MF"
+load 8
+app_global_put
+b label3
+label14:
+txna ApplicationArgs 1
+btoi
+dup
+store 8
+load 8
+int 5000
+<=
+bz label2
+byte "BF"
+load 8
+app_global_put
+b label3
+label15:
+byte "CF"
+txna ApplicationArgs 1
+btoi
+app_global_put
+b label3
+label4:
+byte "GS"
+app_global_get
+bz label2
+int 1
+txn OnCompletion
+==
+bnz label16
+int 0
+txn ApplicationID
+byte "v"
+app_local_get_ex
+bz label2
+store 3
+int 0
+byte "s"
+app_local_get
+bz label2
+int 2
+txn OnCompletion
+==
+bnz label17
+txn OnCompletion
+int 0
+==
+bz label2
+txna ApplicationArgs 0
+byte "mw"
+==
+bnz label18
+txna ApplicationArgs 0
+byte "wA"
+==
+bnz label19
+txna ApplicationArgs 0
+byte "bw"
+==
+bnz label20
+err
+label16:
+global GroupSize
+int 1
+==
+int 0
+byte "CF"
+app_global_get
+dup
+store 8
+==
+&&
+bnz label21
+global GroupSize
+int 2
+==
+load 8
+int 0
+>
+&&
+bz label2
+gtxn 1 TypeEnum
+int 1
+==
+gtxn 1 Receiver
+load 4
+==
+&&
+gtxn 1 Amount
+load 8
+>=
+&&
+bz label2
+label21:
+int 1
+balance
+int 0
+==
+bz label2
+byte "Program"
+byte "Pr"
+app_global_get
+concat
+txn Sender
+concat
+byte "Su"
+app_global_get
+concat
+sha512_256
+dup
+store 8
+txna Accounts 1
+==
+bz label2
+int 0
+byte "v"
+load 8
+app_local_put
+int 0
+byte "s"
+int 1
+app_local_put
+b label3
+label17:
+int 0
+store 7
+gtxn 1 TypeEnum
+int 1
+==
+global GroupSize
+int 2
+==
+&&
+load 3
+gtxn 1 Sender
+==
+&&
+gtxn 1 RekeyTo
+global ZeroAddress
+==
+&&
+gtxn 1 Fee
+global MinTxnFee
+==
+&&
+gtxn 1 CloseRemainderTo
+global ZeroAddress
+!=
+&&
+load 7
+byte "m"
+app_local_get
+int 0
+==
+&&
+bnz label3
+err
+label18:
+byte "MF"
+app_global_get
+store 9
+gtxn 1 AssetAmount
+store 8
+int 0
+store 7
+load 3
+txna Accounts 1
+==
+gtxn 1 RekeyTo
+global ZeroAddress
+==
+&&
+global GroupSize
+int 2
+==
+load 9
+int 0
+==
+&&
+bnz label22
+global GroupSize
+int 3
+==
+&&
+load 9
+int 0
+>
+&&
+gtxn 2 TypeEnum
+int 1
+==
+&&
+load 8
+load 9
+*
+int 10000
+/
+dup
+store 6
+gtxn 2 Sender
+load 3
+==
+bz label23
+load 6
+gtxn 2 Fee
++
+store 7
+label23:
+gtxn 2 Amount
+==
+&&
+gtxn 2 Receiver
+load 4
+==
+&&
+gtxn 2 CloseRemainderTo
+global ZeroAddress
+==
+&&
+label22:
+gtxn 1 TypeEnum
+int 4
+==
+&&
+gtxn 1 AssetAmount
+int 0
+>
+&&
+gtxn 1 Sender
+byte "MA"
+app_global_get
+==
+&&
+gtxn 1 Fee
+global MinTxnFee
+==
+&&
+gtxn 1 AssetCloseTo
+global ZeroAddress
+==
+&&
+gtxn 1 XferAsset
+byte "ASA"
+app_global_get
+==
+&&
+bz label2
+int 0
+byte "m"
+app_local_get
+load 8
++
+store 6
+b label24
+label19:
+load 3
+txna Accounts 1
+==
+global GroupSize
+int 2
+==
+&&
+load 3
+gtxn 1 Sender
+==
+&&
+gtxn 1 RekeyTo
+global ZeroAddress
+==
+&&
+gtxn 1 TypeEnum
+int 1
+==
+&&
+gtxn 1 Amount
+dup
+store 7
+int 1000
+>=
+&&
+gtxn 1 Fee
+global MinTxnFee
+==
+&&
+gtxn 1 CloseRemainderTo
+global ZeroAddress
+==
+&&
+bz label2
+int 0
+byte "m"
+app_local_get
+int 1
+balance
+load 7
+-
+gtxn 1 Fee
+-
+<=
+bnz label3
+err
+label20:
+byte "BF"
+app_global_get
+store 9
+gtxn 1 TypeEnum
+int 4
+==
+load 3
+txna Accounts 1
+==
+&&
+global GroupSize
+int 2
+==
+load 9
+int 0
+==
+&&
+bnz label25
+global GroupSize
+int 3
+==
+&&
+load 9
+int 0
+>
+&&
+gtxn 2 TypeEnum
+int 1
+==
+&&
+gtxn 1 AssetAmount
+load 9
+*
+int 10000
+/
+gtxn 2 Amount
+==
+&&
+gtxn 2 Receiver
+load 4
+==
+&&
+gtxn 2 CloseRemainderTo
+global ZeroAddress
+==
+&&
+gtxn 2 Sender
+load 3
+==
+bz label25
+gtxn 2 Fee
+gtxn 2 Amount
++
+store 7
+label25:
+load 7
+gtxn 1 Fee
++
+store 7
+gtxn 1 AssetAmount
+int 0
+>
+&&
+gtxn 1 AssetReceiver
+byte "MA"
+app_global_get
+dup
+store 9
+==
+&&
+gtxn 1 AssetSender
+load 9
+!=
+&&
+gtxn 1 XferAsset
+byte "ASA"
+app_global_get
+==
+&&
+bz label2
+int 0
+byte "m"
+app_local_get
+gtxn 1 AssetAmount
+-
+store 6
+label24:
+int 0
+byte "m"
+load 6
+app_local_put
+int 1
+balance
+load 7
+-
+load 6
+>=
+bnz label3
+err
+label2:
+int 0
+return
+label3:
+int 1
+return

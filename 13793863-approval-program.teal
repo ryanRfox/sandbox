@@ -1,0 +1,68 @@
+#pragma version 2
+// intcblock 0 1 2 4 5
+// bytecblock 0x53970a289a75eaa25b8a4296d66128a466c41e583e5268f3f6a6627dcea36fd7 0x636f756e746572
+txn OnCompletion
+int 0
+==
+bnz label1
+txn OnCompletion
+int 1
+==
+bnz label2
+txn OnCompletion
+int 2
+==
+bnz label3
+txn OnCompletion
+int 4
+==
+bnz label4
+txn OnCompletion
+int 5
+==
+bnz label5
+err
+label1:
+byte "S
+(uê¢[BÖa(¤fÄX>Rhóö¦b}Î£o×"
+txn Sender
+==
+bnz label2
+byte "counter"
+dup
+app_global_get
+int 1
++
+dup
+store 0
+app_global_put
+int 0
+byte "counter"
+app_local_get
+int 1
++
+store 1
+int 0
+byte "counter"
+load 1
+app_local_put
+load 0
+return
+label2:
+int 1
+return
+label3:
+int 1
+return
+label5:
+byte "S
+(uê¢[BÖa(¤fÄX>Rhóö¦b}Î£o×"
+txn Sender
+==
+return
+label4:
+byte "S
+(uê¢[BÖa(¤fÄX>Rhóö¦b}Î£o×"
+txn Sender
+==
+return
